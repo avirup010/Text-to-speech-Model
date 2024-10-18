@@ -1,6 +1,69 @@
+import tkinter as tk
+from tkinter import ttk
 import win32com.client
+
+# Create a speech object
 speaker = win32com.client.Dispatch("SAPI.SpVoice")
-while 1:
-    print("Enter the word you want to speak it out by computer")
-    s = input()
-    speaker. Speak(s)
+
+def speak_text():
+    text = entry.get()  # Get the text from the entry widget
+    if text:  # Check if the entry is not empty
+        speaker.Speak(text)  # Speak the text
+
+def on_entry_click(event):
+    """Function to handle entry focus and placeholder."""
+    if entry.get() == "Type your sentence here...":
+        entry.delete(0, "end")  # Clear placeholder
+        entry.config(fg="black")  # Change text color
+
+def on_focusout(event):
+    """Function to handle focus out event and placeholder."""
+    if entry.get() == "":
+        entry.insert(0, "Type your sentence here...")  # Re-add placeholder
+        entry.config(fg="grey")  # Change text color to grey
+
+# Create the main window
+root = tk.Tk()
+root.title("Text to Speech")
+root.geometry("500x400")  # Increased window size for better resolution
+root.configure(bg="#e3f2fd")  # Set a pastel blue background color
+
+# Create a frame with padding and pastel color
+frame = ttk.Frame(root, padding=20)
+frame.pack(padx=20, pady=20, fill=tk.BOTH, expand=True)
+frame.configure(style="PastelFrame.TFrame")
+
+# Custom style for the frame
+style = ttk.Style()
+style.configure("PastelFrame.TFrame", background="#ffffff", borderwidth=5)
+style.map("PastelFrame.TFrame", background=[("active", "#bbdefb")])
+
+# Create and place a label for user input
+label = ttk.Label(frame, text="Enter your sentence below:", background="#ffffff", font=("Segoe UI", 14))  # Increased font size
+label.pack(pady=10)
+
+# Create and place an entry widget with rounded corners and placeholder
+entry = ttk.Entry(frame, width=60, font=("Segoe UI", 14), style="RoundedEntry.TEntry")  # Increased font size and width
+entry.insert(0, "Type your sentence here...")  # Placeholder text
+entry.bind("<FocusIn>", on_entry_click)
+entry.bind("<FocusOut>", on_focusout)
+entry.pack(pady=10)
+
+# Create and place a button with pastel colors
+speak_button = ttk.Button(frame, text="Speak", command=speak_text, style="PastelButton.TButton")
+speak_button.pack(pady=10)
+
+# Create a footer label with pastel background
+footer_label = ttk.Label(root, text="Text to Speech Services", background="#e3f2fd", font=("Segoe UI", 18))  # Increased font size
+footer_label.pack(side=tk.BOTTOM, fill=tk.X, pady=(10, 0))
+
+# Create a label for developer information
+developer_label = ttk.Label(root, text="Developed by Avi", background="#e3f2fd", font=("Segoe UI", 12))  # Increased font size
+developer_label.pack(side=tk.BOTTOM, anchor='se', padx=10, pady=(0, 10))  # Adjusted position
+
+# Custom styles for button and entry
+style.configure("PastelButton.TButton", background="#90caf9", foreground="black", font=("Segoe UI", 14))  # Increased font size
+style.map("PastelButton.TButton", background=[("active", "#64b5f6")])
+
+# Run the application
+root.mainloop()
